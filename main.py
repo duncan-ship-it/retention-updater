@@ -45,7 +45,7 @@ async def main():
             tasks = []
 
             with open(RETENTION_PATH, "r") as f:
-                reader = csv.reader(f, delimiter=DELIMITER)
+                reader = csv.reader(f, delimiter=DELIMITER, escapechar="\\")
 
                 for r in reader:
                     payload = { "directory": r[0], "offset": int(r[1]) if r[1] != "" else 0 }  # this may need to be adjusted
