@@ -27,7 +27,7 @@ async def send_request(sem, payload, session, logger, log_lock):
 
 
 async def main():
-    generate_test_retentions(100_000)  # uncomment this to generate test file
+    # generate_test_retentions(100_000)  # uncomment this to generate test file
 
     sem = asyncio.Semaphore(100)  # throttle concurrent requests to 100
     logger_lock = asyncio.Lock()  # prevent multiple concurrent writes to the log file
