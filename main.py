@@ -9,7 +9,7 @@ from aiohttp import ClientSession, ClientTimeout
 
 
 API_URL = "http://localhost:8080/retention"   # test_server.py path: http://localhost:8080/retention
-HEADERS = {"Authorization": "bearer 123456", "content-type": "application/json", "accept": "application/json"}
+HEADERS = {"Authorization": "bearer 123456", "Content-Type": "application/json", "Accept": "*/*"}
 RETENTION_PATH = "./retentions.csv"
 DELIMITER = ","
 
