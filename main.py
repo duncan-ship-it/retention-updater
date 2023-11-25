@@ -34,7 +34,7 @@ async def log(logger, message, lock):
 
 
 async def main():
-    generate_test_retentions(100_000)  # uncomment this to generate test file
+    # generate_test_retentions(100_000)  # uncomment this to generate test file
 
     limiter = asyncio.Semaphore(100)  # throttle concurrent requests to 100
     log_lock = asyncio.Lock()  # prevent multiple concurrent writes to the log file
