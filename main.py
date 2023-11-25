@@ -9,7 +9,7 @@ from aiohttp import ClientSession, ClientTimeout
 
 
 API_URL = "http://localhost:8080/retention"   # test_server.py path: http://localhost:8080/retention
-HEADERS = {"Authorization": "bearer 123456", "Content-Type": "application/json", "Accept": "*/*"}
+HEADERS = {"Authorization": "bearer 123456", "Content-Type": "plain/text", "Accept": "*/*"}
 RETENTION_PATH = "./retentions.csv"
 DELIMITER = ","
 
@@ -19,7 +19,9 @@ async def send_request(session, payload, limiter, logger, log_lock):
         try:
             async with session.post(API_URL, data=payload) as res:
                 content = await res.text();
-                await log(logger, f"REQUEST={str(payload)} RESPONSE={content}", log_lock)
+
+                await log(logger, f"{'[ERROR]' if res.status // 100 != 2 else ''} REQUEST={payload} RESPONSE=[{res.status}] {content.strip(' ')}", log_lock)
+                
                 return content
 
         except Exception as e:
@@ -32,7 +34,7 @@ async def log(logger, message, lock):
 
 
 async def main():
-    # generate_test_retentions(100_000)  # uncomment this to generate test file
+    generate_test_retentions(100_000)  # uncomment this to generate test file
 
     limiter = asyncio.Semaphore(100)  # throttle concurrent requests to 100
     log_lock = asyncio.Lock()  # prevent multiple concurrent writes to the log file
@@ -45,10 +47,13 @@ async def main():
             tasks = []
 
             with open(RETENTION_PATH, "r") as f:
-                reader = csv.reader(f, delimiter=DELIMITER, escapechar="\\")
+                reader = csv.reader(f, delimiter=DELIMITER)
 
                 for r in reader:
-                    payload = { "directory": r[0], "offset": int(r[1]) if r[1] != "" else 0 }  # this may need to be adjusted
+                    dir = r[0]
+                    offset = int(r[1]) if r[1] != "" else 0;
+
+                    payload = f"directory: {dir} offset: {offset}"  # this may need to be adjusted
 
                     tasks.append(asyncio.ensure_future(send_request(session, payload, limiter, logger, log_lock)))
 
@@ -61,7 +66,7 @@ async def main():
 def generate_test_retentions(rows):
     with open("retentions.csv", "w") as f:
         for i in range(rows):
-            f.write(f"C:\\Users\\TEST\\Desktop\\test,{randint(-3650, 3650)}\n")
+            f.write(f"\"C:\\Use,rs\\TE..ST\\Des,,,ktop\\test\",{randint(-3650, 3650)}\n")
 
 
 if __name__ == "__main__":  # only run if not imported

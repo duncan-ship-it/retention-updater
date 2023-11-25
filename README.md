@@ -1,18 +1,26 @@
 # Retention Updater
 
-Asynchronously sends csv data retention directory and day offset data to REST API endpoint.
+Asynchronously sends retention directory and day offset csv data to REST API endpoint.
 
-Assumptions:
+## Assumptions
 
-- Two values per row
+- Always two values per row
 
-- Day offset is either a valid decimal or blank - any decimals are floored to integers in the request
+- Any directories containing the delimiter character are enclosed in double quotes
 
-- JSON request (POST)
+- Day offset is either a valid integer or blank - blank becomes 0
+
+- POST requests
 
 - Endpoint can handle 100 concurrent requests
 
-Install dependencies (Python >=3.10):
+- Endpoint can handle directory format(s) in file (differences between UNIX and Windows)
+
+## Run
+
+Install Python (3.10 or greater)
+
+Install dependencies:
 
 `python -m pip install -r requirements.txt`
 
